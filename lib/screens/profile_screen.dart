@@ -5,51 +5,87 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profil Saya'),
+        centerTitle: true,
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
+        elevation: 1,
       ),
       body: SingleChildScrollView(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                const CircleAvatar(
-                  radius: 80,
-                  // Ganti 'assets/profile.jpg' dengan path foto Anda
-                  backgroundImage: AssetImage('assets/profile.jpg'),
-                ),
-                const SizedBox(height: 20),
-                _buildProfileItem(Icons.person, "Nama", "Zakinanda Faishal Arifin"),
-                _buildProfileItem(Icons.credit_card, "NIM", "124230023"),
-                _buildProfileItem(Icons.cake, "Tempat, Tanggal Lahir", "Sleman, 10 Oktober 2004"),
-                _buildProfileItem(Icons.favorite, "Hobi", "Mendengarkan Musik"),
-                const SizedBox(height: 20),
-                Text(
-                  '"Live as if you were to die tomorrow. Learn as if you were to live forever."',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontStyle: FontStyle.italic,
-                    color: Colors.grey[700],
-                  ),
-                ),
-              ],
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: colorScheme.primary, width: 3),
+              ),
+              child: const CircleAvatar(
+                radius: 70,
+                backgroundImage: AssetImage('assets/profile.jpg'),
+              ),
             ),
-          ),
+            const SizedBox(height: 24),
+            _buildProfileItem(
+              context,
+              Icons.person,
+              "Nama",
+              "Zakinanda Faishal Arifin",
+            ),
+            _buildProfileItem(context, Icons.credit_card, "NIM", "124230023"),
+            _buildProfileItem(
+              context,
+              Icons.cake,
+              "Tempat, Tanggal Lahir",
+              "Sleman, 10 Oktober 2004",
+            ),
+            _buildProfileItem(
+              context,
+              Icons.favorite,
+              "Hobi",
+              "Mendengarkan Musik",
+            ),
+            const SizedBox(height: 28),
+            Text(
+              '"Live as if you were to die tomorrow. Learn as if you were to live forever."',
+              textAlign: TextAlign.center,
+              style: textTheme.bodyMedium?.copyWith(
+                fontStyle: FontStyle.italic,
+                color: colorScheme.secondary,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildProfileItem(IconData icon, String title, String subtitle) {
+  Widget _buildProfileItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String subtitle,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        leading: Icon(icon, color: Colors.teal),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(subtitle, style: const TextStyle(fontSize: 16)),
+        leading: Icon(icon, color: colorScheme.primary),
+        title: Text(
+          title,
+          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(subtitle, style: textTheme.bodyLarge),
       ),
     );
   }

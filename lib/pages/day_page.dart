@@ -9,11 +9,18 @@ class DayPage extends StatefulWidget {
 
 class _DayPageState extends State<DayPage> {
   final _dayController = TextEditingController();
-  String _result = 'Hasil akan ditampilkan di sini';
+  String? _result;
 
   void _checkDay() {
     final int? dayNumber = int.tryParse(_dayController.text);
-    String dayName;
+    String? dayName;
+
+    if (dayNumber == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Masukkan angka terlebih dahulu')),
+      );
+      return;
+    }
 
     switch (dayNumber) {
       case 1:
@@ -38,11 +45,22 @@ class _DayPageState extends State<DayPage> {
         dayName = 'Minggu';
         break;
       default:
-        dayName = 'Nomor tidak valid! Masukkan angka 1-7.';
+        dayName = null;
     }
+
     setState(() {
-      _result = 'Hari ke-$dayNumber adalah: $dayName';
+      if (dayName != null) {
+        _result = 'Hari ke-$dayNumber adalah: $dayName';
+      } else {
+        _result = '❌ Nomor tidak valid! Masukkan angka 1-7.';
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    _dayController.dispose();
+    super.dispose();
   }
 
   @override
@@ -60,26 +78,34 @@ class _DayPageState extends State<DayPage> {
               decoration: const InputDecoration(
                 labelText: 'Masukkan Nomor Hari (1-7)',
                 border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.calendar_today),
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: _checkDay,
-              child: const Text('Cek Hari'),
+              icon: const Icon(Icons.search),
+              label: const Text('Cek Hari'),
             ),
             const SizedBox(height: 30),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.teal.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(10),
+            if (_result != null)
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.teal.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.teal, width: 1),
+                ),
+                child: Text(
+                  _result!,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal,
+                  ),
+                ),
               ),
-              child: Text(
-                _result,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-            )
           ],
         ),
       ),

@@ -21,22 +21,35 @@ class _PyramidPageState extends State<PyramidPage> {
     final double baseWidth = double.tryParse(_baseWidthController.text) ?? 0;
     final double height = double.tryParse(_heightController.text) ?? 0;
 
-    if (baseLength > 0 && baseWidth > 0 && height > 0) {
-      // Volume = 1/3 * Luas Alas * Tinggi
-      final volume = (1 / 3) * baseLength * baseWidth * height;
-
-      // Luas Permukaan = Luas Alas + Luas Seluruh Sisi Tegak
-      final slantHeight1 = sqrt(pow(baseWidth / 2, 2) + pow(height, 2));
-      final slantHeight2 = sqrt(pow(baseLength / 2, 2) + pow(height, 2));
-      final baseArea = baseLength * baseWidth;
-      final sideArea = (baseLength * slantHeight1) + (baseWidth * slantHeight2);
-      final surfaceArea = baseArea + sideArea;
-      
-      setState(() {
-        _volumeResult = volume.toStringAsFixed(2);
-        _surfaceAreaResult = surfaceArea.toStringAsFixed(2);
-      });
+    if (baseLength <= 0 || baseWidth <= 0 || height <= 0) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Input harus lebih dari 0')));
+      return;
     }
+
+    // Volume = 1/3 * Luas Alas * Tinggi
+    final volume = (1 / 3) * baseLength * baseWidth * height;
+
+    // Luas Permukaan = Luas Alas + Luas Seluruh Sisi Tegak
+    final slantHeight1 = sqrt(pow(baseWidth / 2, 2) + pow(height, 2));
+    final slantHeight2 = sqrt(pow(baseLength / 2, 2) + pow(height, 2));
+    final baseArea = baseLength * baseWidth;
+    final sideArea = (baseLength * slantHeight1) + (baseWidth * slantHeight2);
+    final surfaceArea = baseArea + sideArea;
+
+    setState(() {
+      _volumeResult = volume.toStringAsFixed(2);
+      _surfaceAreaResult = surfaceArea.toStringAsFixed(2);
+    });
+  }
+
+  @override
+  void dispose() {
+    _baseLengthController.dispose();
+    _baseWidthController.dispose();
+    _heightController.dispose();
+    super.dispose();
   }
 
   @override
@@ -60,10 +73,19 @@ class _PyramidPageState extends State<PyramidPage> {
                 child: const Text('Hitung'),
               ),
               const SizedBox(height: 24),
-              const Text('Hasil:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const Text(
+                'Hasil:',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 10),
-              Text('Volume: $_volumeResult cm³', style: const TextStyle(fontSize: 18)),
-              Text('Luas Permukaan: $_surfaceAreaResult cm²', style: const TextStyle(fontSize: 18)),
+              Text(
+                'Volume: $_volumeResult cm³',
+                style: const TextStyle(fontSize: 18),
+              ),
+              Text(
+                'Luas Permukaan: $_surfaceAreaResult cm²',
+                style: const TextStyle(fontSize: 18),
+              ),
             ],
           ),
         ),
@@ -77,7 +99,7 @@ class _PyramidPageState extends State<PyramidPage> {
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
     );
   }
